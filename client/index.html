@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-GB" class="core">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://origami-build.ft.com">
+    <link rel="preconnect" href="https://build.origami.ft.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.polyfill.io">
+
+    <!--
+      TODO: FILL IN THESE MANDATORY TAGS AND
+            REMOVE THIS COMMENT
+
+    <title>@@TITLE</title>
+    <meta name="twitter:title" content="Has the UK left the EU yet?">
+    <meta property="og:title" content="Has the UK left the EU yet?">
+
+    <meta name="description" content="Has the UK left the EU yet? Here's where to find the latest">
+    <meta name="twitter:description" content="Has the UK left the EU yet? Here's where to find the latest">
+    <meta property="og:description" content="Here's where to find the latest.">
+
+    <link rel="canonical" href="http://hastheuklefttheeuyet.com">
+    <meta name="twitter:url" content="http://hastheuklefttheeuyet.com">
+    <meta property="og:url" content="http://hastheuklefttheeuyet.com">
+
+    <link rel="image_src" href="@@IMAGE">
+    <meta name="twitter:image" content="@@IMAGE">
+    <meta property="og:image" content="@@IMAGE">
+    -->
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@ft">
+
+
+    <script inline src="scripts/top.js"></script>
+    <link inline rel="stylesheet" href="styles/top.css">
+
+    <link rel="stylesheet" href="https://origami-build.ft.com/v2/bundles/css?modules=n-normalize@^1,o-fonts@^2">
+    <link rel="stylesheet" href="https://origami-build.ft.com/v2/bundles/css?modules=o-grid@^4,o-typography@^4">
+    <link rel="stylesheet" href="styles/main.css">
+
+    <include src="includes/misc-metadata.html"></include>
+    <include src="includes/analytics-ga.html"></include>
+  </head>
+  <body>
+
+
+    <!--
+      TODO: REPLACE THIS COMMENT WITH A TRACKING SNIPPET
+      http://ft-interactive.github.io/tracking-snippet-generator/
+    -->
+
+    <include src="includes/header.html"></include>
+    <main role="main">
+      <article class="article">
+        <div class="article-head o-grid-container">
+          <div class="o-grid-row">
+            <header data-o-grid-colspan="12 S11 Scenter M9 L8 XL7">
+              <include src="includes/mock-article-head.html"></include>
+            </header>
+          </div>
+        </div>
+        <div class="article-body o-typography-body-wrapper">
+
+          <include src="includes/mock-article-content.html"></include>
+
+        </div>
+      </article>
+    </main>
+    <include src="includes/footer.html"></include>
+
+    <script async>
+    queue([
+      'scripts/main.js'
+    ]);
+    </script>
+
+  </body>
+</html>
