@@ -24,6 +24,7 @@ $share-button-size: 38px;
 
     a {
       width: $share-button-size;
+      border-bottom: none;
       &:hover {
       }
     }
@@ -82,5 +83,6 @@ $share-button-size: 38px;
 
   #whynot {
     margin-bottom: 30px;
+    font-size: 20px;
   }
 }
