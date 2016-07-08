@@ -83,7 +83,8 @@ var polyfill_features = [
   'requestAnimationFrame',
   'Promise',
   'matchMedia',
-  'HTMLPictureElement'
+  'HTMLPictureElement',
+  'fetch|always|gated'
 ];
 
 var polfill_url = 'https://cdn.polyfill.io/v2/polyfill.min.js?callback=clear_queue&features='
