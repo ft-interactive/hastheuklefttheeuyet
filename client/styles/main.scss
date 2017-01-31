@@ -92,3 +92,7 @@ $share-button-size: 38px;
     font-weight: 400;
   }
 }
+
+.article-head .o-share--horizontal .o-share__action {
+  box-sizing: content-box !important;
+}
