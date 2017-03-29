@@ -83,7 +83,12 @@ $share-button-size: 38px;
     text-align: center;
     font-size: 30vw;
     color: #af516c;
+
+    @media (min-width: 900px) {
+      font-size: 295px;
+    }
   }
+
 
   .whynot {
     margin-bottom: 30px;
