@@ -81,11 +81,15 @@ $share-button-size: 38px;
 
   #answer {
     text-align: center;
-    font-size: 30vw;
+    font-size: 20vw;
     color: #af516c;
+    line-height: 18vw;
+    margin-bottom: 6vw;
 
     @media (min-width: 900px) {
-      font-size: 295px;
+      font-size: 200px;
+      margin-bottom: 50px;
+      line-height: 1em;
     }
   }
 
