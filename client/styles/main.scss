@@ -6,6 +6,7 @@ $font-display: FinancierDisplayWeb, Georgia, serif;
 
 body {
   @include oColorsFor(page, background);
+  background-color: #fff1e5;
   margin: 0;
   border: 0;
   font-family: $font-sans;
@@ -51,17 +52,40 @@ $share-button-size: 38px;
 }
 
 .o-share {
+  margin-top: 8px;
   margin-bottom: 20px;
 }
 
 .article {
+  position: relative;
+  max-width: 340px;
+  margin: 0 auto;
+
+  @media (min-width: 520px) {
+    max-width: 620px;
+  }
+
   &-head {
-    margin-top: 36px;
+    margin-top: 20px;
     margin-bottom: 0;
-    text-align: center;
+    text-align: left;
     h1 {
       font-family: $font-sans;
-      color: #b8b1a9;
+      font-size: 32px;
+      line-height: 34px;
+      text-transform: uppercase;
+      color: white;
+      display: inline-block;
+      width: 100%;
+
+      span {
+        background-color: #0F5499; // #CC0000
+      }
+
+      @media (min-width: 520px) {
+        font-size: 62px;
+        line-height: 56px;
+      }
     }
     .o-share--vertical {
       float: right;
@@ -80,28 +104,80 @@ $share-button-size: 38px;
   }
 
   #answer {
-    text-align: center;
-    font-size: 20vw;
-    color: #af516c;
-    line-height: 18vw;
-    margin-bottom: 6vw;
+    margin-top: 12px;
+    font-size: 72px;
+    line-height: 58px;
+    text-transform: uppercase;
+    color: white;
+    background-color: #cc0000;
+    display: inline-block;
 
-    @media (min-width: 900px) {
-      font-size: 200px;
-      margin-bottom: 50px;
-      line-height: 1em;
+    @media (min-width: 520px) {
+      font-size: 112px;
+      line-height: 90px;
     }
   }
 
+  .boris {
+    position: absolute;
+    top: 40px;
+    right: 16px;
+    width: 120px;
+
+    @media (min-width: 520px) {
+      width: 200px;
+      top: 80px;
+    }
+
+    img {
+      width: 100%;
+    }
+  }
+
+  #timestamp {
+    font-size: 18px;
+    color: #33302e;
+    text-shadow: 0 2px 4px #ffffff;
+    font-weight: 600;
+    margin: 68px 0;
+    max-width: 150px;
+
+    @media (min-width: 520px) {
+      font-size: 28px;
+      max-width: 200px;
+      margin: 20px 0 40px 0;
+    }
+  }
 
   .whynot {
-    margin-bottom: 30px;
-    font-size: 19px;
-    color: #999999;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #33302e;
     font-weight: 400;
+
+    @media (min-width: 520px) {
+      font-size: 20px;
+      line-height: 24px;
+      max-width: 262px;
+    }
   }
 }
 
 .article-head .o-share--horizontal .o-share__action {
   box-sizing: content-box !important;
+}
+
+.o-typography-body-wrapper a.o-share__icon {
+  border-bottom: none;
+}
+
+.o-share__icon--twitter:before,
+.o-share__icon--facebook:before,
+.o-share__icon--whatsapp:before,
+.o-typography-body-wrapper a.o-share__icon,
+.o-share__action {
+  @media (min-width: 520px) {
+    width: 28px !important;
+    height: 28px !important;
+  }
 }
