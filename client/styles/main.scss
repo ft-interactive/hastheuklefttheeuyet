@@ -1,11 +1,20 @@
-@import 'o-colors/main';
+$system-code: 'ig-projects';
+@import '@financial-times/o-colors/main';
+@import '@financial-times/o-normalise/main';
+@import '@financial-times/o-grid/main';
+@import '@financial-times/o-typography/main';
+@import '@financial-times/o-fonts/main';
+
+@include oNormalise();
+@include oGrid();
+@include oFonts();
+@include oTypography();
 
 $font-sans: MetricWeb, sans-serif;
 $font-serif: Georgia, serif;
 $font-display: FinancierDisplayWeb, Georgia, serif;
 
 body {
-  @include oColorsFor(page, background);
   background-color: #fff1e5;
   margin: 0;
   border: 0;
@@ -77,6 +86,7 @@ $share-button-size: 38px;
       color: white;
       display: inline-block;
       width: 100%;
+      font-weight: 400;
 
       span {
         background-color: #0F5499; // #CC0000
@@ -141,6 +151,7 @@ $share-button-size: 38px;
     font-weight: 600;
     margin: 68px 0;
     max-width: 150px;
+    line-height: 1em;
 
     @media (min-width: 520px) {
       font-size: 28px;
@@ -167,14 +178,14 @@ $share-button-size: 38px;
   box-sizing: content-box !important;
 }
 
-.o-typography-body-wrapper a.o-share__icon {
+.o-typography-wrapper a.o-share__icon {
   border-bottom: 1px solid #807973;
 }
 
 .o-share__icon--twitter:before,
 .o-share__icon--facebook:before,
 .o-share__icon--whatsapp:before,
-.o-typography-body-wrapper a.o-share__icon,
+.o-typography-wrapper a.o-share__icon,
 .o-share__action {
   @media (min-width: 520px) {
     width: 28px !important;
