@@ -1,17 +1,22 @@
 /* eslint-disable no-console, global-require */
 import browserify from 'browserify';
 import browserSync from 'browser-sync';
-import del from 'del';
 import gulp from 'gulp';
 import mergeStream from 'merge-stream';
 import path from 'path';
-import runSequence from 'run-sequence';
+import inlineSource from 'gulp-inline-source';
+import htmlmin from 'gulp-htmlmin';
+import rev from 'gulp-rev';
+import revReplace from 'gulp-rev-replace';
 import source from 'vinyl-source-stream';
 import watchify from 'watchify';
 import AnsiToHTML from 'ansi-to-html';
+import autoprefixer from 'gulp-autoprefixer';
 
 const $ = require('auto-plug')('gulp');
 const ansiToHTML = new AnsiToHTML();
+
+var sass = require('gulp-sass')(require('sass'));
 
 const AUTOPREFIXER_BROWSERS = [
   'ie >= 8',
@@ -27,7 +32,6 @@ const BROWSERIFY_ENTRIES = [
 
 const BROWSERIFY_TRANSFORMS = [
   'babelify',
-  'debowerify',
 ];
 
 const OTHER_SCRIPTS = [
@@ -38,16 +42,6 @@ let env = 'development';
 
 
 // helpers
-let preventNextReload; // hack to keep a BS error notification on the screen
-function reload() {
-  if (preventNextReload) {
-    preventNextReload = false;
-    return;
-  }
-
-  browserSync.reload();
-}
-
 function handleBuildError(headline, error) {
   if (env === 'development') {
 
@@ -147,32 +141,85 @@ const copyGlob = OTHER_SCRIPTS.concat([
 
 ]);
 
+// reload
+let preventNextReload; // hack to keep a BS error notification on the screen
+gulp.task('reload', (cb) => {
+  if (preventNextReload) {
+    preventNextReload = false;
+    return;
+  }
+
+  browserSync.reload();
+  cb();
+});
+
+// task to do a straightforward browserify bundle (build only)
+gulp.task('scripts', (cb) => {
+  mergeStream(getBundlers().map(bundler => bundler.execute()))
+  cb();
+});
+
+// builds stylesheets with sass/autoprefixer
+gulp.task('styles', (cb) => {
+  gulp.src('client/**/*.scss')
+    .pipe(sass({
+      includePaths: 'node_modules',
+      outputStyle: process.env.NODE_ENV === 'production' ? 'compressed' : 'expanded',
+    }).on('error', function sassError(error) {
+      handleBuildError.call(this, 'Error building Sass', error);
+    }))
+    .pipe(autoprefixer({ overrideBrowserslist: AUTOPREFIXER_BROWSERS }))
+    .pipe(gulp.dest('dist'))
+  cb();
+});
+
+// renames asset files and adds a rev-manifest.json
+gulp.task('revision', (cb) => {
+  gulp.src(['dist/**/*.css', 'dist/**/*.js'])
+    .pipe(rev())
+    .pipe(gulp.dest('dist'))
+    .pipe(rev.manifest())
+    .pipe(gulp.dest('dist'))
+  cb();
+});
+
+// edits html to reflect changes in rev-manifest.json
+gulp.task('revreplace', gulp.series('revision'), (cb) => {
+  gulp.src('dist/**/*.html')
+    .pipe(revReplace({ manifest: gulp.src('./dist/rev-manifest.json') }))
+    .pipe(gulp.dest('dist'))
+  cb();
+});
 
 // copies over miscellaneous files (client => dist)
-gulp.task('copy', () =>
-  gulp.src(copyGlob, { dot: true })
-    .pipe(gulp.dest('dist'))
-);
+gulp.task('copy', (cb) => {
+  gulp.src(copyGlob, { dot: true, allowEmpty: true })
+    .pipe(gulp.dest('dist'));
+  cb();
+});
 
-gulp.task('build-pages', () =>
+gulp.task('build-pages', (cb) => {
   gulp.src(['client/**/*.html', '!client/includes/**.html'])
     .pipe($.htmlTagInclude())
     .pipe(gulp.dest('dist'))
-);
+  cb();
+});
 
 // minifies all HTML, CSS and JS (dist & client => dist)
-gulp.task('html', () =>
+gulp.task('html', (cb) => {
   gulp.src('dist/**/*.html')
-    .pipe($.inlineSource())
-    .pipe($.minifyHtml())
+    .pipe(inlineSource())
+    .pipe(htmlmin({
+      collapseWhitespace: true,
+      processConditionalComments: true,
+      minifyJS: true,
+    }))
     .pipe(gulp.dest('dist'))
-);
-
-// clears out the dist and dist folders
-gulp.task('clean', del.bind(null, ['dist', 'dist/*', '!dist/.git'], { dot: true }));
+  cb();
+});
 
 // // runs a development server (serving up dist and client)
-gulp.task('watch', ['styles', 'build-pages', 'copy'], done => {
+gulp.task('watch', gulp.series(['styles', 'build-pages', 'copy', (done) => {
   const bundlers = getBundlers(true);
 
   // execute all the bundlers once, up front
@@ -193,59 +240,21 @@ gulp.task('watch', ['styles', 'build-pages', 'copy'], done => {
     });
 
     // refresh browser after other changes
-    gulp.watch(['client/**/*.html'], ['build-pages', reload]);
-    gulp.watch(['client/styles/**/*.scss'], ['styles', reload]);
-    gulp.watch(copyGlob, ['copy', reload]);
+    gulp.watch(['client/**/*.html'], gulp.series(['reload', 'build-pages']));
+    gulp.watch(['client/styles/**/*.scss'], gulp.series(['reload', 'styles']));
+    gulp.watch(copyGlob, gulp.series(['reload', 'copy']));
 
     // UNCOMMENT IF USING IMAGEMIN
     // gulp.watch(['client/images/**/*'], reload);
 
     done();
   });
-});
-
-// task to do a straightforward browserify bundle (build only)
-gulp.task('scripts', () =>
-  mergeStream(getBundlers().map(bundler => bundler.execute()))
-);
-
-// builds stylesheets with sass/autoprefixer
-gulp.task('styles', () =>
-  gulp.src('client/**/*.scss')
-    .pipe($.sass({
-        includePaths: 'bower_components',
-        outputStyle: env === 'production' ? 'compressed' : 'expanded'
-      }).on('error', function(error) {
-          handleBuildError.call(this, 'Error building Sass', error);
-      })
-    )
-    .pipe($.autoprefixer({ browsers: AUTOPREFIXER_BROWSERS }))
-    .pipe(gulp.dest('dist'))
-);
-
-// renames asset files and adds a rev-manifest.json
-gulp.task('revision', () =>
-  gulp.src(['dist/**/*.css', 'dist/**/*.js'])
-    .pipe($.rev())
-    .pipe(gulp.dest('dist'))
-    .pipe($.rev.manifest())
-    .pipe(gulp.dest('dist'))
-);
-
-// edits html to reflect changes in rev-manifest.json
-gulp.task('revreplace', ['revision'], () =>
-  gulp.src('dist/**/*.html')
-    .pipe($.revReplace({ manifest: gulp.src('./dist/rev-manifest.json') }))
-    .pipe(gulp.dest('dist'))
-);
+}]));
 
 // makes a production build (client => dist)
-gulp.task('build', done => {
-  env = 'production';
-  runSequence(
-    ['clean'],
-    ['scripts', 'styles', 'build-pages', 'copy'],
-    ['html' /*, 'images'*/],
-    ['revreplace'],
-  done);
-});
+gulp.task('build', gulp.series([(done) => {
+  process.env.NODE_ENV = 'production';
+  done();
+}, 'copy', 'build-pages', 'styles', 'scripts', 'html', 'revreplace', (cb) => {
+  cb();
+}]));
