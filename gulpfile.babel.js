@@ -1,11 +1,13 @@
 /* eslint-disable no-console, global-require */
 import browserify from 'browserify';
 import browserSync from 'browser-sync';
-import del from 'del';
 import gulp from 'gulp';
 import mergeStream from 'merge-stream';
 import path from 'path';
-import runSequence from 'run-sequence';
+import inlineSource from 'gulp-inline-source';
+import htmlmin from 'gulp-htmlmin';
+import rev from 'gulp-rev';
+import revReplace from 'gulp-rev-replace';
 import source from 'vinyl-source-stream';
 import watchify from 'watchify';
 import AnsiToHTML from 'ansi-to-html';
@@ -206,8 +208,12 @@ gulp.task('build-pages', (cb) => {
 // minifies all HTML, CSS and JS (dist & client => dist)
 gulp.task('html', (cb) => {
   gulp.src('dist/**/*.html')
-    .pipe($.inlineSource())
-    .pipe($.minifyHtml())
+    .pipe(inlineSource())
+    .pipe(htmlmin({
+      collapseWhitespace: true,
+      processConditionalComments: true,
+      minifyJS: true,
+    }))
     .pipe(gulp.dest('dist'))
   cb();
 });
@@ -246,11 +252,9 @@ gulp.task('watch', gulp.series(['styles', 'build-pages', 'copy', (done) => {
 }]));
 
 // makes a production build (client => dist)
-gulp.task('build', done => {
-  env = 'production';
-  gulp.series(
-    ['scripts', 'styles', 'build-pages', 'copy'],
-    ['html' /*, 'images'*/],
-    ['revreplace'],
-  done);
-});
+gulp.task('build', gulp.series([(done) => {
+  process.env.NODE_ENV = 'production';
+  done();
+}, 'copy', 'build-pages', 'styles', 'scripts', 'html', 'revreplace', (cb) => {
+  cb();
+}]));

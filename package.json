@@ -43,6 +43,7 @@
     "@financial-times/o-fonts": "^5.3.3",
     "@financial-times/o-grid": "^6.1.5",
     "@financial-times/o-normalise": "^3.2.2",
-    "@financial-times/o-typography": "^7.3.1"
+    "@financial-times/o-typography": "^7.3.1",
+    "gulp-htmlmin": "^5.0.1"
   }
 }
