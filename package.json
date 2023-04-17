@@ -9,7 +9,7 @@
     "babel-eslint": "^10.1.0",
     "babel-polyfill": "^6.26.0",
     "babelify": "^10.0.0",
-    "browser-sync": "^2.27.9",
+    "browser-sync": "^2.29.1",
     "browserify": "^17.0.0",
     "del": "^6.0.0",
     "gulp": "^4.0.2",
